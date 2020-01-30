@@ -1,0 +1,11 @@
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+      
+spring:
+ application:
+    name: newz-nexflix-zuul-api-gateway
+server:
+  port: 8091 
+

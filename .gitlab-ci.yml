@@ -1,0 +1,28 @@
+image: 'maven:3-jdk-8'
+stages:
+ - test
+ - build
+services:
+  - 'mysql:5.5'
+  - 'mongo:3.4-jessie'
+variables:
+  MYSQL_DATABASE: "newsDb"
+  MYSQL_URL: "jdbc:mysql://mysql/newsDb"
+  MYSQL_USER: "app_root"
+  MYSQL_PASSWORD: "root"
+  MYSQL_ROOT_PASSWORD: "root"
+  MONGO_DATABASENAME: newsappdb
+  MONGO_URL: "mongo://mongo/newsappdb"
+cache:
+  paths:
+    - .m2/repository
+    - target
+maven-test:
+ stage: test
+ script: "mvn test"
+maven-build:
+ stage: build
+ script: "mvn package"
+ artifacts:
+  paths:
+   - target/*.jar
