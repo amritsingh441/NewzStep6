@@ -1,7 +1,7 @@
 package com.stackroute.newz.test.service;
 
 
-import com.stackroute.newz.util.exception.NewsNotFoundExeption;
+import com.stackroute.newz.util.exception.NewsNotFoundException;
 import com.stackroute.newz.model.NewsSource;
 import com.stackroute.newz.model.News;
 import com.stackroute.newz.model.UserNews;
@@ -121,7 +121,7 @@ public class NewsServiceImplTest {
 
 
     @Test
-    public void deleteAllNewsSuccess() throws NewsNotFoundExeption {
+    public void deleteAllNewsSuccess() throws NewsNotFoundException {
 
         when(newsRepository.findById("Becky123")).thenReturn(options);
         when(newsRepository.save(userNews)).thenReturn(userNews);
@@ -133,17 +133,17 @@ public class NewsServiceImplTest {
     
 
     @Test
-    public void deleteAllNewsFailure() throws NewsNotFoundExeption {
+    public void deleteAllNewsFailure() throws NewsNotFoundException {
         when(newsRepository.findById("Becky123")).thenThrow(NoSuchElementException.class);
         
         assertThrows(
-        		NewsNotFoundExeption.class,
+        		NewsNotFoundException.class,
                     () -> { newsServiceImpl.deleteAllNews("Becky123"); });
        
     }
 
     @Test
-    public void updateNewsSuccess() throws NewsNotFoundExeption {
+    public void updateNewsSuccess() throws NewsNotFoundException {
 
         when(newsRepository.findById("Becky123")).thenReturn(options);
         news.setContent("Match cancelled");
@@ -155,31 +155,31 @@ public class NewsServiceImplTest {
     }
 
     @Test
-    public void updateNewsFailure() throws NewsNotFoundExeption {
+    public void updateNewsFailure() throws NewsNotFoundException {
 
         when(newsRepository.findById("Becky123")).thenThrow(NoSuchElementException.class);
         news.setContent("Match cancelled");
         newsList.add(news);
         
         assertThrows(
-        		NewsNotFoundExeption.class,
+        		NewsNotFoundException.class,
                     () -> { newsServiceImpl.updateNews(news, news.getNewsId(), news.getAuthor()); });
 
     }
 
     @Test
-    public void getNewsByNewsIdSuccess() throws NewsNotFoundExeption {
+    public void getNewsByNewsIdSuccess() throws NewsNotFoundException {
         when(newsRepository.findById("Becky123")).thenReturn(options);
         News fetechedNews = newsServiceImpl.getNewsByNewsId("Becky123", news.getNewsId());
         assertEquals(news, fetechedNews);
     }
 
     @Test
-    public void getNewsByNewsIdFailure() throws NewsNotFoundExeption {
+    public void getNewsByNewsIdFailure() throws NewsNotFoundException {
         when(newsRepository.findById("Becky123")).thenThrow(NoSuchElementException.class);
         
         assertThrows(
-        		NewsNotFoundExeption.class,
+        		NewsNotFoundException.class,
                     () -> { newsServiceImpl.getNewsByNewsId("Becky123", news.getNewsId()); });
        
     }

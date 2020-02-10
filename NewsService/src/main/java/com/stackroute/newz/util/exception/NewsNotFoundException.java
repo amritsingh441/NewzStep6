@@ -1,10 +1,10 @@
 package com.stackroute.newz.util.exception;
 
-public class NewsNotFoundExeption extends Exception {
+public class NewsNotFoundException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public NewsNotFoundExeption(String message) {
+	public NewsNotFoundException(String message) {
 		super(message);
 	}
 }
