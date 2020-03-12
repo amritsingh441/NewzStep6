@@ -6,5 +6,7 @@ spring:
      database: ${MONGO_DATABASE}
      port: ${MONGO_PORT}
      host: ${MONGO_HOST}
+ application:
+  name: NewsSourceService
 server:
  port: 8083

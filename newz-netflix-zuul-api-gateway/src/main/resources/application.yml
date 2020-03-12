@@ -9,3 +9,13 @@ spring:
 server:
   port: 8091 
 
+zuul:
+  routes:
+    AuthenticationService:
+      url: http://localhost:8082/
+    NewsService:
+      url: http://localhost:8081/
+    NewsSourceService:
+      url: http://localhost:8083/
+    UserProfileService:
+      url: http://localhost:8084/

@@ -1,9 +1,17 @@
 package com.stackroute.newz;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
+import com.stackroute.newz.zuul.config.BeanConfiguration;
 import com.stackroute.newz.zuul.filter.JwtFilter;
 
 /*
@@ -13,8 +21,13 @@ import com.stackroute.newz.zuul.filter.JwtFilter;
  * Add @EnableZuulProxy and @EnableEurekaClient
  * 
  */
-
+@SpringBootApplication
+@EnableZuulProxy
+@EnableEurekaClient
 public class NewzNetflixZuulApiGatwayApplication {
+	
+	@Autowired
+	private BeanConfiguration beanConfiguration;
 
 	public static void main(String[] args) {
 		SpringApplication.run(NewzNetflixZuulApiGatwayApplication.class, args);
@@ -30,7 +43,10 @@ public class NewzNetflixZuulApiGatwayApplication {
 
     @Bean
     public FilterRegistrationBean<JwtFilter> jwtFilter() {
-        return null;
+		final FilterRegistrationBean filterbean=new FilterRegistrationBean(beanConfiguration.corsConfigurer());
+		filterbean.setFilter(new JwtFilter());
+		filterbean.addUrlPatterns("/NewsSourceService/api/v1/*","/NewsService/api/v1/*","/UserProfileService/api/v1/");
+		return filterbean;
     }
 	
 
