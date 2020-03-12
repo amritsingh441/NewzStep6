@@ -1,6 +1,21 @@
 package com.stackroute.newz.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.stackroute.newz.model.NewsSource;
 import com.stackroute.newz.service.NewsSourceService;
+import com.stackroute.newz.util.exception.NewsSourceNotFoundException;
 
 /*
  * As in this assignment, we are working with creating RESTful web service, hence annotate
@@ -10,7 +25,8 @@ import com.stackroute.newz.service.NewsSourceService;
  * format. Starting from Spring 4 and above, we can use @RestController annotation which 
  * is equivalent to using @Controller and @ResposeBody annotation
  */
-
+@RestController
+@RequestMapping("/api/v1")
 public class NewsSourceController {
 
 	/*
@@ -19,8 +35,11 @@ public class NewsSourceController {
 	 * keyword
 	 */
 	
-	public NewsSourceController(NewsSourceService newsSourceService) {
+	private NewsSourceService newsSourceService;
 	
+	@Autowired
+	public NewsSourceController(NewsSourceService newsSourceService) {
+	this.newsSourceService = newsSourceService;
 	}
 	
 
@@ -34,7 +53,14 @@ public class NewsSourceController {
 	 * 
 	 * This handler method should map to the URL "/api/v1/newssource" using HTTP POST method
 	 */
-
+	@PostMapping("/newssource")
+	public ResponseEntity<?> addNewsSource(@RequestBody NewsSource newsSrc){
+		boolean flag = newsSourceService.addNewsSource(newsSrc);
+		if(flag) {
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		}
+		return new ResponseEntity<>(HttpStatus.CONFLICT);
+	}
 
 	/*
 	 * Define a handler method which will delete a newssource from a database.
@@ -49,7 +75,14 @@ public class NewsSourceController {
 	 * without {}.
 	 * 
 	 */
-	
+	@DeleteMapping("/newssource/{newssourceId}")
+	public ResponseEntity<?> deleteNewsSource(@PathVariable int newssourceId){
+		boolean flag = newsSourceService.deleteNewsSource(newssourceId);
+		if(flag) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
 	/*
 	 * Define a handler method which will update a specific newssource by reading the
 	 * Serialized object from request body and save the updated newssource details in a
@@ -61,9 +94,21 @@ public class NewsSourceController {
 	 * This handler method should map to the URL "/api/v1/newssource/{newssourceId}" using 
 	 * HTTP PUT method where "newssourceId" should be replaced by a valid newssourceId
 	 * without {}.
-	 * 
+	 * getNewsSourceById
 	 */
-	
+	@PutMapping("/newssource/{newssourceId}")
+	public ResponseEntity<?> updateNewsSource(@RequestBody NewsSource newsSrc,@PathVariable int newssourceId){
+		
+		try {
+			NewsSource ns = newsSourceService.updateNewsSource(newsSrc, newssourceId);
+			if(ns!=null) {
+				return new ResponseEntity<>(HttpStatus.OK);
+			}
+		} catch (NewsSourceNotFoundException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
 	/*
 	 * Define a handler method which will get us the specific newssource by a userId.
 	 * This handler method should return any one of the status messages basis on
@@ -76,7 +121,17 @@ public class NewsSourceController {
 	 * without {} and "newssourceId" should be replaced by a valid newsId without {}.
 	 * 
 	 */
-	
+	@GetMapping("/newssource/{userId}/{newssourceId}")
+	public ResponseEntity<?> getNewsSourceByUserId(@PathVariable String userId,@PathVariable int newssourceId){
+		try {
+			NewsSource newsSrcObj = newsSourceService.getNewsSourceById(userId, newssourceId);
+			if(newsSrcObj!=null)
+				return new ResponseEntity<>(HttpStatus.OK);
+		} catch (NewsSourceNotFoundException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
 	/*
 	 * Define a handler method which will show details of all newssource created by specific 
 	 * user. This handler method should return any one of the status messages basis on
@@ -87,6 +142,13 @@ public class NewsSourceController {
 	 * where "userId" should be replaced by a valid userId without {}.
 	 * 
 	 */
-
+	@GetMapping("/newssource/{userId}")
+	public ResponseEntity<?> getNewsSourceByUserId(@PathVariable String userId){
+		List<NewsSource> allNewsSrc = newsSourceService.getAllNewsSourceByUserId(userId);
+		if(allNewsSrc!=null && !allNewsSrc.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
     
 }
