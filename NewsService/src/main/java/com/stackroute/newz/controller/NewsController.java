@@ -1,6 +1,22 @@
 package com.stackroute.newz.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.stackroute.newz.model.News;
 import com.stackroute.newz.service.NewsService;
+import com.stackroute.newz.util.exception.NewsNotFoundException;
 
 /*
  * As in this assignment, we are working with creating RESTful web service, hence annotate
@@ -10,7 +26,8 @@ import com.stackroute.newz.service.NewsService;
  * format. Starting from Spring 4 and above, we can use @RestController annotation which 
  * is equivalent to using @Controller and @ResposeBody annotation
  */
-
+@RestController
+@RequestMapping("/api/v1")
 public class NewsController {
 
 	/*
@@ -19,8 +36,12 @@ public class NewsController {
 	 * keyword
 	 */
 
+
+	private NewsService newsService;
+
+	@Autowired
 	public NewsController(NewsService newsService) {
-		
+		this.newsService = newsService;
 	}
 
 	/*
@@ -33,7 +54,14 @@ public class NewsController {
 	 * 
 	 * This handler method should map to the URL "/api/v1/news" using HTTP POST method
 	 */
-
+	@PostMapping("/news")
+	public ResponseEntity<?> addNews(@RequestBody News news){
+		boolean flag = newsService.addNews(news);
+		if(flag) {
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		}
+		return new ResponseEntity<>(HttpStatus.CONFLICT);
+	}
 	/*
 	 * Define a handler method which will delete a news from a database.
 	 * This handler method should return any one of the status messages basis 
@@ -47,7 +75,14 @@ public class NewsController {
 	 * without {}.
 	 * 
 	 */
-
+	@DeleteMapping("/news/{userId}/{newsId}")
+	public ResponseEntity<?> deleteNews(@PathVariable String userId, @PathVariable int newsId){
+		boolean flag = newsService.deleteNews(userId,newsId);
+		if(flag) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
 	/*
 	 * Define a handler method which will delete all the news of a specific user from 
 	 * a database. This handler method should return any one of the status messages 
@@ -61,7 +96,19 @@ public class NewsController {
 	 * without {}.
 	 * 
 	 */
-	
+	@DeleteMapping("/news/{userId}")
+	public ResponseEntity<?> deleteAllNews(@PathVariable String userId){
+		boolean flag = false;
+		try {
+			flag = newsService.deleteAllNews(userId);
+		} catch (NewsNotFoundException e) {
+			e.printStackTrace();
+		}
+		if(flag) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
 	/*
 	 * Define a handler method which will update a specific news by reading the
 	 * Serialized object from request body and save the updated news details in a
@@ -76,7 +123,18 @@ public class NewsController {
 	 * without {} and "newsid" should be replaced by a valid newsId without {}.
 	 * 
 	 */
-	
+	@PutMapping("/news/{userId}/{newsId}")
+	public ResponseEntity<?> updateNews(@PathVariable String userId, @PathVariable int newsId){
+		
+		try {
+			News newsObj = newsService.getNewsByNewsId(userId, newsId);
+			newsService.updateNews(newsObj,newsId,userId);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (NewsNotFoundException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
 	/*
 	 * Define a handler method which will get us the specific news by a userId.
 	 * This handler method should return any one of the status messages basis on
@@ -89,7 +147,17 @@ public class NewsController {
 	 * without {} and "newsid" should be replaced by a valid newsId without {}.
 	 * 
 	 */
-	
+	@GetMapping("/news/{userId}/{newsId}")
+	public ResponseEntity<?> getNewsByNewsId(@PathVariable String userId, @PathVariable int newsId){
+		
+		try {
+			newsService.getNewsByNewsId(userId, newsId);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (NewsNotFoundException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
 
 	/*
 	 * Define a handler method which will show details of all news created by specific 
@@ -102,6 +170,13 @@ public class NewsController {
 	 * 
 	 */
 
-
+	@GetMapping("/news/{userId}")
+	public ResponseEntity<?> getAllNewsByUserId(@PathVariable String userId){
+		List<News> resNewsList =newsService.getAllNewsByUserId(userId);
+		if(resNewsList!=null) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
 
 }
