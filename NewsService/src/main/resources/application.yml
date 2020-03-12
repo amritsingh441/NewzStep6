@@ -1,9 +1,9 @@
 spring:
  data:
    mongodb:
-     database: keepnote
-     port: 27017
-     host: localhost
+    database: keepnote
+    port: 27017
+    host: localhost
  application:
   name: NewsService
 server:

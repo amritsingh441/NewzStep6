@@ -1,10 +1,10 @@
 spring:
- data:
+  data:
    mongodb:
      database: keepnote
      port: 27017
      host: localhost
- application:
-  name: UserProfileService
+  application:
+   name: UserProfileService
 server:
  port: 8084
