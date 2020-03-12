@@ -3,7 +3,7 @@ package com.stackroute.newz.service;
 import java.util.List;
 
 import com.stackroute.newz.model.News;
-import com.stackroute.newz.util.exception.NewsNotFoundExeption;
+import com.stackroute.newz.util.exception.NewsNotFoundException;
 
 /*
 * Service classes are used here to implement additional business logic/validation 
@@ -41,7 +41,7 @@ public class NewsServiceImpl implements NewsService {
 
 	/* This method should be used to delete all news for a  specific userId. */
 	
-	public boolean deleteAllNews(String userId) throws NewsNotFoundExeption {
+	public boolean deleteAllNews(String userId) throws NewsNotFoundException {
 		return false;
 	}
 
@@ -49,7 +49,7 @@ public class NewsServiceImpl implements NewsService {
 	 * This method should be used to update a existing news.
 	 */
 
-	public News updateNews(News news, int newsId, String userId) throws NewsNotFoundExeption {
+	public News updateNews(News news, int newsId, String userId) throws NewsNotFoundException {
 		return null;
 	}
 
@@ -57,7 +57,7 @@ public class NewsServiceImpl implements NewsService {
 	 * This method should be used to get a news by newsId created by specific user
 	 */
 
-	public News getNewsByNewsId(String userId, int newsId) throws NewsNotFoundExeption {
+	public News getNewsByNewsId(String userId, int newsId) throws NewsNotFoundException {
 		return null;
 	}
 

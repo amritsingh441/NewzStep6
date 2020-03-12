@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.stackroute.newz.controller.NewsController;
-import com.stackroute.newz.util.exception.NewsNotFoundExeption;
+import com.stackroute.newz.util.exception.NewsNotFoundException;
 import com.stackroute.newz.model.NewsSource;
 import com.stackroute.newz.model.News;
 import com.stackroute.newz.model.Reminder;
@@ -150,7 +150,7 @@ class NewsControllerTest {
     @Test
     public void deleteAllNewsFailure() throws Exception {
 
-        when(newsService.deleteAllNews("Becky123")).thenThrow(NewsNotFoundExeption.class);
+        when(newsService.deleteAllNews("Becky123")).thenThrow(NewsNotFoundException.class);
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/news/Becky123")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
@@ -175,7 +175,7 @@ class NewsControllerTest {
     @Test
     public void updateNewsFailure() throws Exception {
 
-        when(newsService.updateNews(any(), eq(news.getNewsId()), eq("Becky123"))).thenThrow(NewsNotFoundExeption.class);
+        when(newsService.updateNews(any(), eq(news.getNewsId()), eq("Becky123"))).thenThrow(NewsNotFoundException.class);
         news.setContent("Mumbai Indians vs RCB match scheduled  for 6 PM");
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/news/Becky123/" + news.getNewsId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -199,7 +199,7 @@ class NewsControllerTest {
     @Test
     public void getNewsByIdFailure() throws Exception {
 
-        when(newsService.getNewsByNewsId("Becky123", 1)).thenThrow(NewsNotFoundExeption.class);
+        when(newsService.getNewsByNewsId("Becky123", 1)).thenThrow(NewsNotFoundException.class);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/news/Becky123/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())

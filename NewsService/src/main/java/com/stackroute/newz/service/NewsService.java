@@ -3,7 +3,7 @@ package com.stackroute.newz.service;
 import java.util.List;
 
 import com.stackroute.newz.model.News;
-import com.stackroute.newz.util.exception.NewsNotFoundExeption;
+import com.stackroute.newz.util.exception.NewsNotFoundException;
 
 public interface NewsService {
 
@@ -16,11 +16,11 @@ public interface NewsService {
 
 	boolean deleteNews(String userId, int newsId);
 
-	boolean deleteAllNews(String userId) throws NewsNotFoundExeption;
+	boolean deleteAllNews(String userId) throws NewsNotFoundException;
 
-	News updateNews(News news, int id, String userId) throws NewsNotFoundExeption;
+	News updateNews(News news, int id, String userId) throws NewsNotFoundException;
 
-	News getNewsByNewsId(String userId, int newsId) throws NewsNotFoundExeption;
+	News getNewsByNewsId(String userId, int newsId) throws NewsNotFoundException;
 
 	List<News> getAllNewsByUserId(String userId);
 
