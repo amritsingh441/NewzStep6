@@ -16,12 +16,12 @@ variables:
 
 
 maven-test:
-  image: maven:3-jdk-8
+  image: maven:3-jdk-11
   stage: test
   script: "mvn -X test"
 
 maven-build:
-  image: maven:3-jdk-8
+  image: maven:3-jdk-11
   stage: build
   script: "mvn package -U"
   artifacts:
