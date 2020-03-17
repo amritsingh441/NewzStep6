@@ -1,11 +1,11 @@
 image:java:8-jdk
 stages:
-  -test
-  -build
+  - test
+  - build
 
 services:
-  -'mysql:latest'
-  -'mongo:3.4-jessie'
+  - 'mysql:latest'
+  - 'mongo:3.4-jessie'
 variables:
   MYSQL_HOST: localhost
   MYSQL_URL: jdbc:mysql://localhost:3306/keepnote?createDatabaseIfNotExist=true&user=root&password=root
@@ -16,9 +16,9 @@ variables:
 
 
 maven-test:
-  image:maven:3-jdk-8
-  stage:test
-  script:"mvn test"
+  image: maven:3-jdk-8
+  stage: test
+  script: "mvn test"
 
 maven-build:
   image: maven:3-jdk-8
