@@ -1,0 +1,92 @@
+# Dockerfile has been added in all micro-services, you need to dockerize all micro-services and add docker-compose.yml file
+version: '3'
+services:
+  mysql:
+    image: mysql
+    network_mode: host
+    container_name: mysqlcontainer
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: keepnote
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_CI_URL: jdbc:mysql://localhost:3306/keepnote
+      
+  mongo:
+    image: mongo
+    network_mode: host
+    container_name: mymongocontainer
+     
+   
+  newsservice:
+    image: newsservice
+    restart: always
+    network_mode: host
+    depends_on:
+      - mongo
+    ports:
+      - 8081:8081
+    healthcheck:
+      test: "exit 0"
+      
+  newssourceservice:
+    image: newssourceservice
+    restart: always
+    network_mode: host
+    depends_on:
+      - mongo
+    ports:
+      - 8083:8083
+    healthcheck:
+      test: "exit 0"     
+      
+  userprofileservice:
+    image: userprofileservice
+    restart: always
+    network_mode: host
+    depends_on:
+      - mongo
+    ports:
+      - 8084:8084
+    healthcheck:
+      test: "exit 0" 
+      
+  authenticationservice:
+    image: authenticationservice
+    restart: always
+    network_mode: host
+    depends_on:
+      - mysql
+    ports:
+      - 8082:8082
+    healthcheck:
+      test: "exit 0"      
+      
+  newz-nexflix-zuul-api-gateway:
+    image: newz-nexflix-zuul-api-gateway
+    restart: always
+    network_mode: host
+    ports:
+      - 8091:8091
+    healthcheck:
+      test: "exit 0"      
+      
+  newz-netflix-eureka-naming-server:
+    image: newz-netflix-eureka-naming-server
+    restart: always
+    network_mode: host
+    ports:
+      - 8761:8761
+    healthcheck:
+      test: "exit 0"   
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
